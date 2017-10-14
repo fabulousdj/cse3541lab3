@@ -23,6 +23,7 @@ public class Particle : MonoBehaviour {
 		float deltaTime = Time.deltaTime;
 		this.Position = CalculateNewPosition(deltaTime);
 		this.Velocity = CalculateNewVelocity(deltaTime);
+		this.transform.position = this.Position;
 	}
 
 	private Vector3 CalculateNewPosition(float deltaTime)
