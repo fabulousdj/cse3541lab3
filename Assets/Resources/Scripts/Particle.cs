@@ -1,13 +1,11 @@
-using System;
 using UnityEngine;
 
 public class Particle : MonoBehaviour {
-    
     public Vector3 Position;
     public Vector3 Velocity;
     public Vector3 Force;
-    public TimeSpan Age;
-    public TimeSpan MaxAge;
+    public float Age;
+    public float MaxAge = 5.0f;
     public float Mass = 1.0f;
     public GameObject Apperance;
     public GameObject BackWall;
@@ -16,12 +14,27 @@ public class Particle : MonoBehaviour {
     public GameObject RightWall;
     public GameObject Ceiling;
     public GameObject Floor;
-    
-    
+    public bool Disposable;
+
     private Vector3 acceleration;
-    
+
+    public static Particle Create(Vector3 position, Vector3 velocity, float maxAge) {
+        GameObject obj = Instantiate(Resources.Load("Prefabs/Particle")) as GameObject;
+        Particle particle = obj.GetComponent<Particle>();
+        particle.Init(position, velocity, maxAge);
+        return particle;
+    }
+
+    public void Init(Vector3 position, Vector3 velocity, float maxAge) {
+        this.Position = position;
+        this.Velocity = velocity;
+        this.Age = 0.0f;
+        this.MaxAge = maxAge;
+    }
+
     // Use this for initialization
     void Start () {
+        Disposable = false;
         BackWall = GameObject.Find("BackWall");
         FrontWall = GameObject.Find ("FrontWall");
         LeftWall = GameObject.Find ("LeftWall");
@@ -40,8 +53,12 @@ public class Particle : MonoBehaviour {
         this.Position = CalculateNewPosition(deltaTime);
         this.Velocity = CalculateNewVelocity(deltaTime);
         this.transform.position = this.Position;
-        
-        CollisionDetection ();
+
+        CollisionDetection();
+
+        if (Disposable) {
+            Destroy(gameObject);
+        }
     }
     
     private Vector3 CalculateNewPosition(float deltaTime)
@@ -89,7 +106,7 @@ public class Particle : MonoBehaviour {
         if (Mathf.Abs ((float)(center.y - floor_bound_y)) <= radius || center.y < floor_bound_y) {
             Vector3 newVelocity = this.Velocity;
             Vector3 newPosition = this.Position;
-            newVelocity.y = -newVelocity.y;
+            newVelocity.y = -(newVelocity.y * 0.8f);
             newPosition.y = floor_bound_y + radius;
             this.Position = newPosition;
             this.Velocity = newVelocity;
