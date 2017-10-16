@@ -101,22 +101,22 @@ public class Particle : MonoBehaviour {
         }
         if (Mathf.Abs ((float)(center.x - rightWall_bound_x)) <= radius) {
             Vector3 newVelocity = this.Velocity;
-            newVelocity.x = -newVelocity.x;
+            newVelocity.x = -(newVelocity.x*0.8f);
             this.Velocity = newVelocity;
         }
         if (Mathf.Abs ((float)(center.x - leftWall_bound_x)) <= radius) {
             Vector3 newVelocity = this.Velocity;
-            newVelocity.x = -newVelocity.x;
+            newVelocity.x = -(newVelocity.x*0.8f);
             this.Velocity = newVelocity;
         }
         if (Mathf.Abs ((float)(center.z - frontWall_bound_z)) <= radius) {
             Vector3 newVelocity = this.Velocity;
-            newVelocity.z = -newVelocity.z;
+            newVelocity.z = -(newVelocity.z*0.8f);
             this.Velocity = newVelocity;
         }
         if (Mathf.Abs ((float)(center.z - backWall_bound_z)) <= radius) {
             Vector3 newVelocity = this.Velocity;
-            newVelocity.z = -newVelocity.z;
+            newVelocity.z = -(newVelocity.z*0.8f);
             this.Velocity = newVelocity;
         }
         
