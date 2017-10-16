@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 public class Particle : MonoBehaviour {
@@ -86,9 +86,12 @@ public class Particle : MonoBehaviour {
             radius = Mathf.Sqrt(distance);
         }
         
-        if (Mathf.Abs ((float)(center.y - floor_bound_y)) <= radius) {
+        if (Mathf.Abs ((float)(center.y - floor_bound_y)) <= radius || center.y < floor_bound_y) {
             Vector3 newVelocity = this.Velocity;
+            Vector3 newPosition = this.Position;
             newVelocity.y = -newVelocity.y;
+            newPosition.y = floor_bound_y + radius;
+            this.Position = newPosition;
             this.Velocity = newVelocity;
         }
         if (Mathf.Abs ((float)(center.y - ceiling_bound_y)) <= radius) {
