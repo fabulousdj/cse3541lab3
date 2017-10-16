@@ -48,5 +48,27 @@ public class Emitter : MonoBehaviour {
         {
             p.Disposable = true;
         }
+		PPCollisionHandler ();
     }
+
+	void PPCollisionHandler(){
+		foreach (Particle p in particles) {
+			foreach (Particle q in particles) {
+				if (!p.Equals (q)) {
+					float distance = Mathf.Pow (p.center.x - q.center.x, 2) + Mathf.Pow (p.center.y - q.center.y, 2) + Mathf.Pow(p.center.z - q.center.z, 2);
+					if (Mathf.Sqrt (distance) <= (p.radius + q.radius)) {
+						float newVelocity_x = ((float)p.Velocity.x + (float)q.Velocity.x) / 2;
+						float newVelocity_y = ((float)p.Velocity.y + (float)q.Velocity.y) / 2;
+						float newVelocity_z = ((float)p.Velocity.z + (float)q.Velocity.z) / 2;
+						Vector3 newVelocity = new Vector3 (newVelocity_x, newVelocity_y, newVelocity_z);
+						//Vector3 tmp = p.Velocity
+						p.Velocity = newVelocity;
+						q.Velocity = newVelocity;
+						//p.Velocity = q.Velocity;
+
+					}
+				}
+			}
+		}
+	}
 }

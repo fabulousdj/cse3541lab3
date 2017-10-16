@@ -7,6 +7,8 @@ public class Particle : MonoBehaviour {
     public float Age;
     public float MaxAge = 5.0f;
     public float Mass = 1.0f;
+	public Vector3 center;
+	public float radius;
     public GameObject Apperance;
     public GameObject BackWall;
     public GameObject FrontWall;
@@ -43,7 +45,6 @@ public class Particle : MonoBehaviour {
         Floor = GameObject.Find ("Floor");
         
         acceleration = Force / Mass;
-        Debug.Log (BackWall.transform.position);
         CollisionDetection ();
     }
     
@@ -94,9 +95,8 @@ public class Particle : MonoBehaviour {
             sum_z += world_vertices [i].z;
         }
         
-        Vector3 center = new Vector3 (sum_x / world_vertices.Length, sum_y / world_vertices.Length, sum_z / world_vertices.Length);
-        Debug.Log (center);
-        float radius = 0f;
+        center = new Vector3 (sum_x / world_vertices.Length, sum_y / world_vertices.Length, sum_z / world_vertices.Length);
+        radius = 0f;
         for (int i = 0; i < world_vertices.Length; i++) {
             float distance = Mathf.Pow ((world_vertices [i].x - center.x), 2) + Mathf.Pow ((world_vertices [i].y - center.y), 2) + Mathf.Pow ((world_vertices [i].z - center.z), 2);
             if (distance > Mathf.Pow(radius, 2))
@@ -111,29 +111,44 @@ public class Particle : MonoBehaviour {
             this.Position = newPosition;
             this.Velocity = newVelocity;
         }
-        if (Mathf.Abs ((float)(center.y - ceiling_bound_y)) <= radius) {
+		if (Mathf.Abs ((float)(center.y - ceiling_bound_y)) <= radius || center.y > ceiling_bound_y) {
             Vector3 newVelocity = this.Velocity;
-            newVelocity.y = -newVelocity.y;
+			Vector3 newPosition = this.Position;
+			newVelocity.y = -(newVelocity.y * 0.8f);
+			newPosition.y = ceiling_bound_y - radius;
+			this.Position = newPosition;
+			this.Velocity = newVelocity;
+        }
+		if (Mathf.Abs ((float)(center.x - rightWall_bound_x)) <= radius || center.x > rightWall_bound_x) {
+            Vector3 newVelocity = this.Velocity;
+			Vector3 newPosition = this.Position;
+            newVelocity.x = -(newVelocity.x * 0.8f);
+			newPosition.x = rightWall_bound_x - radius;
+			this.Position = newPosition;
             this.Velocity = newVelocity;
         }
-        if (Mathf.Abs ((float)(center.x - rightWall_bound_x)) <= radius) {
-            Vector3 newVelocity = this.Velocity;
-            newVelocity.x = -(newVelocity.x*0.8f);
-            this.Velocity = newVelocity;
+		if (Mathf.Abs ((float)(center.x - leftWall_bound_x)) <= radius || center.x < leftWall_bound_x) {
+			Vector3 newVelocity = this.Velocity;
+			Vector3 newPosition = this.Position;
+			newVelocity.x = -(newVelocity.x * 0.8f);
+			newPosition.x = leftWall_bound_x + radius;
+			this.Position = newPosition;
+			this.Velocity = newVelocity;
         }
-        if (Mathf.Abs ((float)(center.x - leftWall_bound_x)) <= radius) {
+		if (Mathf.Abs ((float)(center.z - frontWall_bound_z)) <= radius || center.z > frontWall_bound_z) {
             Vector3 newVelocity = this.Velocity;
-            newVelocity.x = -(newVelocity.x*0.8f);
-            this.Velocity = newVelocity;
-        }
-        if (Mathf.Abs ((float)(center.z - frontWall_bound_z)) <= radius) {
-            Vector3 newVelocity = this.Velocity;
+			Vector3 newPosition = this.Position;
             newVelocity.z = -(newVelocity.z*0.8f);
+			newPosition.z = frontWall_bound_z - radius;
+			this.Position = newPosition;
             this.Velocity = newVelocity;
         }
-        if (Mathf.Abs ((float)(center.z - backWall_bound_z)) <= radius) {
+		if (Mathf.Abs ((float)(center.z - backWall_bound_z)) <= radius || center.z < backWall_bound_z) {
             Vector3 newVelocity = this.Velocity;
+			Vector3 newPosition = this.Position;
             newVelocity.z = -(newVelocity.z*0.8f);
+			newPosition.z = backWall_bound_z + radius;
+			this.Position = newPosition;
             this.Velocity = newVelocity;
         }
         
