@@ -4,8 +4,8 @@ using UnityEngine;
 public class Emitter : MonoBehaviour {
 
     public static float FORCE_MAGNITUDE = 10.0f;
-    public static float MAX_SPEED = 5.0f;
-    public static float MIN_SPEED = 1.0f;
+    public static float MAX_SPEED = 5f;
+    public static float MIN_SPEED = 2.5f;
 
     public Particle Particle;
     public int MaxNumOfParticles = 20;
@@ -50,11 +50,11 @@ public class Emitter : MonoBehaviour {
             p.Disposable = true;
         }
         p.ResetForce();
-		//ParticleParticleCollisionHandler ();
+		HandleParticleParticleCollision ();
         p.UpdatePhysics(deltaTime);
     }
 
-    void ParticleParticleCollisionHandler(){
+    void HandleParticleParticleCollision(){
 		foreach (Particle p in particles) {
 			foreach (Particle q in particles) {
 				if (!p.Equals (q)) {
@@ -76,20 +76,20 @@ public class Emitter : MonoBehaviour {
         for (int i = 0; i < this.MaxNumOfParticles; i++) {
             Vector3 origin = new Vector3(0, 1.5f, 0);
             Vector3 pos = GetRandomPosition(origin);
-            Particle p = Particle.Create(pos, GetRandomVelocity(origin, pos), 10.0f);
+			Particle p = Particle.Create(pos, GetRandomVelocity(origin, pos), Random.Range(5.0f, 15.0f));
             particles.Add(p);
         }
     }
 
     Vector3 GetRandomPosition(Vector3 origin) {
-        float posX = origin.x + Random.Range(-1.0f, 1.0f);
-        float posY = origin.y + Random.Range(-1.0f, 1.0f);
-        float posZ = origin.z + Random.Range(-1.0f, 1.0f);
+        float posX = origin.x + Random.Range(-0.5f, 0.5f);
+        float posY = origin.y + Random.Range(0.0f, 0.5f);
+        float posZ = origin.z + Random.Range(-0.5f, 0.5f);
 
-        while (Mathf.Sqrt(Mathf.Pow(posX - origin.x, 2) + Mathf.Pow(posY - origin.y, 2) + Mathf.Pow(posZ - origin.z, 2)) > 1) {
-            posX = origin.x + Random.Range(-1.0f, 1.0f);
-            posY = origin.y + Random.Range(0.0f, 1.0f);
-            posZ = origin.z + Random.Range(-1.0f, 1.0f);
+        while (Mathf.Sqrt(Mathf.Pow(posX - origin.x, 2) + Mathf.Pow(posY - origin.y, 2) + Mathf.Pow(posZ - origin.z, 2)) > 0.5f) {
+			posX = origin.x + Random.Range(-0.5f, 0.5f);
+			posY = origin.y + Random.Range(0.0f, 0.5f);
+			posZ = origin.z + Random.Range(-0.5f, 0.5f);
         }
 
         return new Vector3(posX, posY, posZ);

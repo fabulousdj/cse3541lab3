@@ -7,6 +7,7 @@ public class Particle : MonoBehaviour {
     public float Age;
     public float MaxAge = 5.0f;
     public float Mass = 1.0f;
+	public float VelocityThreshold = 0.01f;
 
 	public Vector3 center;
 	public float radius;
@@ -59,7 +60,7 @@ public class Particle : MonoBehaviour {
 
     public void UpdatePhysics(float deltaTime) {
         this.Position = CalculateNewPosition(deltaTime);
-        this.Velocity = CalculateNewVelocity(deltaTime);
+		this.Velocity = (this.Velocity.magnitude <= this.VelocityThreshold) ? Vector3.zero : CalculateNewVelocity(deltaTime);
         this.transform.position = this.Position;
     }
 
