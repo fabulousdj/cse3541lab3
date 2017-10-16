@@ -3,10 +3,11 @@ using UnityEngine;
 public class Particle : MonoBehaviour {
     public Vector3 Position;
     public Vector3 Velocity;
-    public Vector3 Force;
+    public Vector3 Gravity;
     public float Age;
     public float MaxAge = 5.0f;
     public float Mass = 1.0f;
+
 	public Vector3 center;
 	public float radius;
     public GameObject Apperance;
@@ -16,9 +17,10 @@ public class Particle : MonoBehaviour {
     public GameObject RightWall;
     public GameObject Ceiling;
     public GameObject Floor;
+
     public bool Disposable;
 
-    private Vector3 acceleration;
+    private Vector3 Force;
 
     public static Particle Create(Vector3 position, Vector3 velocity, float maxAge) {
         GameObject obj = Instantiate(Resources.Load("Prefabs/Particle")) as GameObject;
@@ -31,37 +33,44 @@ public class Particle : MonoBehaviour {
         this.Position = position;
         this.Velocity = velocity;
         this.Age = 0.0f;
+        this.Force = this.Gravity;
         this.MaxAge = maxAge;
     }
 
     // Use this for initialization
     void Start () {
         Disposable = false;
+        this.Force = this.Gravity;
         BackWall = GameObject.Find("BackWall");
         FrontWall = GameObject.Find ("FrontWall");
         LeftWall = GameObject.Find ("LeftWall");
         RightWall = GameObject.Find ("RightWall");
         Ceiling = GameObject.Find ("Ceiling");
         Floor = GameObject.Find ("Floor");
-        
-        acceleration = Force / Mass;
-        CollisionDetection ();
     }
     
     // Update is called once per frame
     void Update () {
-        float deltaTime = Time.deltaTime;
-        this.Position = CalculateNewPosition(deltaTime);
-        this.Velocity = CalculateNewVelocity(deltaTime);
-        this.transform.position = this.Position;
-
         CollisionDetection();
-
         if (Disposable) {
             Destroy(gameObject);
         }
     }
-    
+
+    public void UpdatePhysics(float deltaTime) {
+        this.Position = CalculateNewPosition(deltaTime);
+        this.Velocity = CalculateNewVelocity(deltaTime);
+        this.transform.position = this.Position;
+    }
+
+    public void ApplyForce(Vector3 force) {
+        this.Force += force;
+    }
+
+    public void ResetForce() {
+        this.Force = this.Gravity;
+    }
+
     private Vector3 CalculateNewPosition(float deltaTime)
     {
         return this.Position + CalculateNewVelocity(deltaTime / 2) * deltaTime;
@@ -69,9 +78,13 @@ public class Particle : MonoBehaviour {
     
     private Vector3 CalculateNewVelocity(float deltaTime)
     {
-        return this.Velocity + this.acceleration * deltaTime;
+        return this.Velocity + CalculateAcceleration() * deltaTime;
     }
-    
+
+    private Vector3 CalculateAcceleration() {
+        return this.Force / this.Mass;
+    }
+
     private void CollisionDetection(){
         
         float floor_bound_y = Floor.transform.position.y + Floor.transform.localScale.y / 2;

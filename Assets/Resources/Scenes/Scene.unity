@@ -558,6 +558,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Particle: {fileID: 114466883106753298, guid: 3547554ee0fe04615ab79e2556a10ce2, type: 2}
+  DeltaTime: 0
+  Threshold: 1
 --- !u!4 &1493178474
 Transform:
   m_ObjectHideFlags: 0
