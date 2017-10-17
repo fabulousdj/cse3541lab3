@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Emitter : MonoBehaviour {
 
-    public static float FORCE_MAGNITUDE = 10.0f;
+    public static float FORCE_MAGNITUDE = 15.0f;
     public static float MAX_SPEED = 5f;
     public static float MIN_SPEED = 2.5f;
 
@@ -74,7 +74,7 @@ public class Emitter : MonoBehaviour {
 
     void GenerateParticles() {
         for (int i = 0; i < this.MaxNumOfParticles; i++) {
-            Vector3 origin = new Vector3(0, 1.5f, 0);
+            Vector3 origin = new Vector3(0, 0.75f, 0);
             Vector3 pos = GetRandomPosition(origin);
 			Particle p = Particle.Create(pos, GetRandomVelocity(origin, pos), Random.Range(5.0f, 15.0f));
             particles.Add(p);

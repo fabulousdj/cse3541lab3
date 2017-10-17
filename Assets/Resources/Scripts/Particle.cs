@@ -22,6 +22,8 @@ public class Particle : MonoBehaviour {
     public bool Disposable;
 
     private Vector3 Force;
+    private Renderer rend;
+    private Light light;
 
     public static Particle Create(Vector3 position, Vector3 velocity, float maxAge) {
         GameObject obj = Instantiate(Resources.Load("Prefabs/Particle")) as GameObject;
@@ -48,14 +50,23 @@ public class Particle : MonoBehaviour {
         RightWall = GameObject.Find ("RightWall");
         Ceiling = GameObject.Find ("Ceiling");
         Floor = GameObject.Find ("Floor");
+        this.rend = GetComponent<Renderer>();
+        this.light = GetComponent<Light>();
     }
     
     // Update is called once per frame
     void Update () {
         CollisionDetection();
+        UpdateColor();
         if (Disposable) {
             Destroy(gameObject);
         }
+    }
+
+    void UpdateColor() {
+        Color newColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+        rend.material.color = newColor;
+        light.color = newColor;
     }
 
     public void UpdatePhysics(float deltaTime) {
